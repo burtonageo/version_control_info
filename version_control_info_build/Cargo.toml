@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2024"
 description = "Build script support for the version_control_info crate"
 license = "MIT OR Apache-2.0"
+readme = "./Readme.md"
 
 [dependencies]
