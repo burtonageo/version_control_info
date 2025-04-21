@@ -12,14 +12,14 @@
 //! To use this crate, you must use the `version_control_info_build` crate
 //! in a build script to generate the version control info:
 //!
-//! ```rust,no_run
+//! ```rust,ignore
 //! // build.rs
 //!
 //! use version_control_info_build::generate_version_control_info;
 //! use std::error::Error;
 //!
-//! fn main() -> Result<(), Box<dyn Error + 'static>> {
-//!     let info = VersionControlDetection::detect()?;
+//! fn main() -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
+//!     let info = version_control_info_build::detect()?;
 //!     // You can access information from the info in your build script.
 //!     let commit = info.version_control_info().commit();
 //!     println!("{:?}", commit);
@@ -32,10 +32,10 @@
 //! Then, in your crate, you can use the [`get!()`] macro to get the generated
 //! version control info as a constant:
 //!
-//! ```rust, no_compile
+//! ```rust,ignore
 //! // main.rs
 //! use version_control_info::Info;
-//! const VCS_INFO: &'_ Info<'_> = version_control_info::get!();
+//! const VCS_INFO: Info<'_> = version_control_info::get!();
 //!
 //! fn main() {
 //!     println!("{:#?}", VCS_INFO);
@@ -283,6 +283,16 @@ impl ErrorTrait for Error {}
 ///
 /// If the build-stage vcs detection has failed, then this will result in a compile error.
 /// If you need to handle failures gracefully, use the [`try_get!()`] macro.
+///
+/// # Example
+/// 
+/// ```rust,ignore
+/// # fn main() {
+/// use version_control_info::Info;
+/// const INFO: version_control_info::Info<'_> = version_control_info::get!();
+/// println!("commit = {}", INFO.commit());
+/// # }
+/// ```
 #[macro_export]
 macro_rules! get {
     () => {
@@ -297,6 +307,19 @@ macro_rules! get {
 ///
 /// If the `version_control_info_build::detect()` function has not been run in a build
 /// script, this macro will fail.
+///
+/// # Example
+/// 
+/// ```rust,ignore
+/// # fn main() {
+/// use version_control_info::{Info, Error};
+/// const MAYBE_INFO: Result<Info<'_>, Error> = version_control_info::try_get!();
+/// match MAYBE_INFO.as_ref() {
+///     Ok(info) => println!("version control commit = {}", info.commit()),
+///     Err(e) => println!("could not get vcs info: {}", e),
+/// }
+/// # }
+/// ```
 #[macro_export]
 macro_rules! try_get {
     () => {
