@@ -1,6 +1,6 @@
 [package]
 name = "version_control_info"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2024"
 description = "Embed vcs info in cargo crates"
 license = "MIT OR Apache-2.0"
@@ -14,7 +14,7 @@ default-features = false
 
 [dev-dependencies.version_control_info_build]
 path = "../version_control_info_build"
-version = "0.3"
+version = "0.4"
 
 [features]
 default = ["std"]
