@@ -79,10 +79,10 @@ pub fn detect() -> Result<VersionControlDetection, Box<dyn Error + Send + Sync +
 
 macro_rules! writeln_indented {
     ($indent:expr, $out:expr, $msg:literal $(,)?) => {
-        writeln!($out, concat!("{__space:__indent$}", $msg), __space = ' ', __indent = $indent.indent.get() * 4)
+        writeln!($out, concat!("{__space:__indent$}", $msg), __space = ' ', __indent = $indent.num_chars())
     };
     ($indent:expr, $out:expr, $msg:literal, $($arg:tt)+ $(,)?) => {
-        writeln!($out, concat!("{__space:__indent$}", $msg), $($arg)+, __space = ' ', __indent = $indent.indent.get() * 4)
+        writeln!($out, concat!("{__space:__indent$}", $msg), $($arg)+, __space = ' ', __indent = $indent.num_chars())
     };
 }
 
@@ -420,6 +420,7 @@ fn write_header_comment(file: &mut dyn Write) -> io::Result<()> {
 
 struct Indenter {
     indent: Cell<usize>,
+    chars_per_indent_level: usize,
 }
 
 impl Indenter {
@@ -428,32 +429,46 @@ impl Indenter {
     fn new(initial_indent: usize) -> Self {
         Self {
             indent: Cell::new(initial_indent),
+            chars_per_indent_level: 4,
         }
     }
 
+    #[inline]
     fn auto_indent(&self) -> AutoIndent<'_> {
         AutoIndent {
-            indent: &self.indent,
+            indenter: self,
         }
+    }
+
+    #[must_use]
+    #[inline]
+    fn num_chars(&self) -> usize {
+        self.indent.get() * self.chars_per_indent_level
     }
 }
 
 struct AutoIndent<'a> {
-    indent: &'a Cell<usize>,
+    indenter: &'a Indenter,
 }
 
 impl<'a> AutoIndent<'a> {
     #[inline]
     fn increment(&self) -> Self {
-        self.indent.set(self.indent.get().saturating_add(1));
+        self.indenter.indent.set(self.indenter.indent.get().saturating_add(1));
         Self {
-            indent: self.indent,
+            indenter: self.indenter,
         }
     }
 
     #[inline]
     fn decrement(&self) {
-        self.indent.set(self.indent.get().saturating_sub(1));
+        self.indenter.indent.set(self.indenter.indent.get().saturating_sub(1));
+    }
+
+    #[must_use]
+    #[inline]
+    fn num_chars(&self) -> usize {
+        self.indenter.num_chars()
     }
 }
 
