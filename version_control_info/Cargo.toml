@@ -6,4 +6,17 @@ description = "Embed vcs info in cargo crates"
 license = "MIT OR Apache-2.0"
 readme = "../Readme.md"
 
-[dependencies]
+[dependencies.serde]
+version = "1"
+features = ["derive"]
+optional = true
+default-features = false
+
+[dev-dependencies.version_control_info_build]
+path = "../version_control_info_build"
+version = "0.2"
+
+[features]
+default = ["std"]
+std = ["serde?/std"]
+serde = ["dep:serde"]
