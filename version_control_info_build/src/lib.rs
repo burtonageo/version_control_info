@@ -169,7 +169,7 @@ pub fn generate_version_control_info(detection: &VersionControlDetection) -> io:
                         writeln_indented!(
                             indent,
                             file,
-                            "extra: Some(&version_control_info::GitExtraData {{"
+                            "extra: Some(&version_control_info::git::ExtraData {{"
                         )?;
                         {
                             let _indent = indent.increment();

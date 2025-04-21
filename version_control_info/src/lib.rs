@@ -117,7 +117,7 @@ pub enum SpecificInfo<'a> {
         /// Extra metadata about the git repository, if available.
         ///
         /// See the definition of [`GitExtraData`] for more details.
-        extra: Option<&'a GitExtraData<'a>>,
+        extra: Option<&'a git::ExtraData<'a>>,
     },
     /// Contains information about a Mercurial repository.
     Mercurial {
@@ -126,7 +126,7 @@ pub enum SpecificInfo<'a> {
         /// Extra metadata about the Mercurial repository.
         ///
         /// See the definition of [`MercurialExtraData`] for more details.
-        extra: Option<&'a MercurialExtraData<'a>>,
+        extra: Option<&'a mercurial::ExtraData<'a>>,
     },
 }
 
@@ -165,42 +165,56 @@ impl<'a> SpecificInfo<'a> {
     }
 }
 
-/// Contains extra data about the git repository.
-///
-/// # Note
-///
-/// This will only be present if the dependency is specified as a git
-/// dependency when used in the `Cargo.toml` file. When a dependency
-/// is downloaded from [`crates.io`](https://crates.io), the git
-/// history and repository metadata is not downloaded, and so this
-/// information will not be available.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
-#[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
-pub struct GitExtraData<'a> {
-    /// The name of the branch.
-    pub branch: &'a str,
-    /// Tags associated with the current commit.
-    pub tags: &'a [&'a str],
+/// Module containing types and functionality specific to git repositories.
+pub mod git {
+    /// Contains extra data about the git repository.
+    ///
+    /// # Note
+    ///
+    /// This will only be present if the dependency is specified as a git
+    /// dependency when used in the `Cargo.toml` file. When a dependency
+    /// is downloaded from [`crates.io`](https://crates.io), the git
+    /// history and repository metadata is not downloaded, and so this
+    /// information will not be available.
+    #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+    #[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
+    pub struct ExtraData<'a> {
+        /// The name of the branch.
+        pub branch: &'a str,
+        /// Tags associated with the current commit.
+        pub tags: &'a [&'a str],
+    }
 }
 
-/// Contains extra data about the Mercurial repository.
-///
-/// # Notes
-///
-/// At the moment, this will never be available when building the dependency
-/// from `crates.io`.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
-#[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
-pub struct MercurialExtraData<'a> {
-    /// Local revision number.
-    pub local_revision: &'a str,
-    /// The branch of the current revision.
-    pub branch: &'a str,
-    /// The list of tags for the current revision.
-    pub tags: &'a [&'a str],
-    /// The list of bookmarks for the current revision.
-    pub bookmarks: &'a [&'a str],
+#[doc(inline)]
+#[deprecated]
+pub use git::ExtraData as GitExtraData;
+
+/// Module containing types and functionality specific to mercurial repositories.
+pub mod mercurial {
+    /// Contains extra data about the Mercurial repository.
+    ///
+    /// # Notes
+    ///
+    /// At the moment, this will never be available when building the dependency
+    /// from `crates.io`.
+    #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+    #[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
+    pub struct ExtraData<'a> {
+        /// Local revision number.
+        pub local_revision: &'a str,
+        /// The branch of the current revision.
+        pub branch: &'a str,
+        /// The list of tags for the current revision.
+        pub tags: &'a [&'a str],
+        /// The list of bookmarks for the current revision.
+        pub bookmarks: &'a [&'a str],
+    }
 }
+
+#[doc(inline)]
+#[deprecated]
+pub use mercurial::ExtraData as MercurialExtraData;
 
 /// The source from which the version control information was read.
 #[non_exhaustive]
