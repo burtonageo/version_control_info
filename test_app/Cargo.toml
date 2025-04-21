@@ -1,0 +1,12 @@
+[package]
+name = "test_app"
+version = "0.1.0"
+edition = "2024"
+build = "build.rs"
+
+[dependencies.version_control_info]
+path = "../version_control_info"
+
+[build-dependencies.version_control_info_build]
+path = "../version_control_info_build"
+

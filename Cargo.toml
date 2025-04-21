@@ -3,6 +3,7 @@ resolver = "3"
 members = [
     "./version_control_info",
     "./version_control_info_build",
+    "./test_app",
 ]
 default-members = [
     "./version_control_info",
