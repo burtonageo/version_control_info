@@ -5,6 +5,8 @@ edition = "2024"
 description = "Embed vcs info in cargo crates"
 license = "MIT OR Apache-2.0"
 readme = "../Readme.md"
+repository = "https://github.com/burtonageo/version_control_info"
+keywords = ["version control", "revision control", "commit", "vcs"]
 
 [dependencies.serde]
 version = "1"
