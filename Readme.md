@@ -9,7 +9,7 @@ crate.
 To use this crate, you must use the `version_control_info_build` crate
 in a build script to generate the version control info:
 
-```rust,ignore
+```rust
 // build.rs
 
 use version_control_info_build::generate_version_control_info;
@@ -26,10 +26,10 @@ fn main() -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
 }
 ```
 
-Then, in your crate, you can use the [`get!()`] macro to get the generated
+Then, in your crate, you can use the `get!()` macro to get the generated
 version control info as a constant:
 
-```rust,ignore
+```rust
 // main.rs
 use version_control_info::Info;
 const VCS_INFO: Info<'_> = version_control_info::get!();
@@ -39,7 +39,7 @@ fn main() {
 }
 ```
 
-The [`Info`] type contains the version control information which can be queried.
+The `Info` type contains the version control information which can be queried.
 
 ## Notes
 
