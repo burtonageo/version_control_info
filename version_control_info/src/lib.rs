@@ -12,7 +12,7 @@
 //! To use this crate, you must use the `version_control_info_build` crate
 //! in a build script to generate the version control info:
 //!
-//! ```rust,ignore
+//! ```rust
 //! // build.rs
 //!
 //! use version_control_info_build::generate_version_control_info;
@@ -21,10 +21,16 @@
 //! fn main() -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
 //!     let info = version_control_info_build::detect()?;
 //!     // You can access information from the info in your build script.
-//!     let commit = info.version_control_info().commit();
-//!     println!("{:?}", commit);
+//!     match info.version_control_info().map(|info| info.commit()) {
+//!         Some(commit) => println!("{:?}", commit),
+//!         None => println!("Could not get commit info"),
+//!     }
 //!
+//!     # // don't actually generate vcs info in the test
+//!     # if false {
+//!     // Then, generate a vcs info file.
 //!     generate_version_control_info(&info)?;
+//!     # }
 //!     Ok(())
 //! }
 //! ```
