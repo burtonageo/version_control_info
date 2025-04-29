@@ -16,7 +16,7 @@ default-features = false
 
 [dev-dependencies.version_control_info_build]
 path = "../version_control_info_build"
-version = "0.4"
+version = "0.5"
 
 [features]
 default = ["std"]
